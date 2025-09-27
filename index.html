@@ -91,18 +91,20 @@
         }
 
         .main-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            padding: 20px;
             min-height: calc(100vh - 200px);
         }
 
         .map-container {
-            flex: 1;
             background: white;
-            margin: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
+            aspect-ratio: 16/10;
         }
 
         .map-header {
@@ -139,7 +141,7 @@
         }
 
         .map-area {
-            height: 500px;
+            height: calc(100% - 60px);
             background: linear-gradient(45deg, #ecf0f1, #bdc3c7);
             position: relative;
             overflow: hidden;
@@ -161,7 +163,7 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            background: #e74c3c;
+            background: #f39c12;
             border: 3px solid white;
             border-radius: 50%;
             cursor: pointer;
@@ -171,6 +173,14 @@
 
         .stop:hover {
             transform: scale(1.2);
+            background: #e67e22;
+        }
+
+        .stop.start-end {
+            background: #e74c3c;
+        }
+
+        .stop.start-end:hover {
             background: #c0392b;
         }
 
@@ -186,8 +196,12 @@
             white-space: nowrap;
             pointer-events: none;
             opacity: 1;
-            border: 2px solid #e74c3c;
+            border: 2px solid #f39c12;
             z-index: 10;
+        }
+
+        .stop.start-end .stop-label {
+            border: 2px solid #e74c3c;
         }
 
         .stop-info {
@@ -205,12 +219,19 @@
             margin-top: 25px;
         }
 
-        .stop-1 { top: 15%; left: 50%; }
-        .stop-2 { top: 35%; left: 20%; }
-        .stop-3 { top: 55%; left: 25%; }
-        .stop-4 { top: 75%; left: 50%; }
-        .stop-5 { top: 55%; left: 75%; }
-        .stop-6 { top: 35%; left: 80%; }
+        .stop-1 { top: 85%; left: 75%; }
+        .stop-2 { top: 70%; left: 60%; }
+        .stop-3 { top: 55%; left: 45%; }
+        .stop-4 { top: 40%; left: 30%; }
+        .stop-5 { top: 25%; left: 20%; }
+        .stop-6 { top: 15%; left: 25%; }
+        .stop-7 { top: 10%; left: 40%; }
+        .stop-8 { top: 15%; left: 55%; }
+        .stop-9 { top: 20%; left: 70%; }
+        .stop-10 { top: 30%; left: 80%; }
+        .stop-11 { top: 45%; left: 85%; }
+        .stop-12 { top: 60%; left: 80%; }
+        .stop-13 { top: 85%; left: 75%; }
 
         .stop-1 .stop-label { top: -50px; left: -30px; }
         .stop-2 .stop-label { top: -50px; left: -25px; }
@@ -218,6 +239,13 @@
         .stop-4 .stop-label { top: -50px; left: -30px; }
         .stop-5 .stop-label { top: -50px; left: -25px; }
         .stop-6 .stop-label { top: -50px; left: -20px; }
+        .stop-7 .stop-label { top: -50px; left: -25px; }
+        .stop-8 .stop-label { top: -50px; left: -20px; }
+        .stop-9 .stop-label { top: -50px; left: -25px; }
+        .stop-10 .stop-label { top: -50px; left: -30px; }
+        .stop-11 .stop-label { top: -50px; left: -25px; }
+        .stop-12 .stop-label { top: -50px; left: -20px; }
+        .stop-13 .stop-label { top: -50px; left: -30px; }
 
         .stop-1 .stop-info { top: -20px; left: -25px; }
         .stop-2 .stop-info { top: -20px; left: -20px; }
@@ -225,12 +253,19 @@
         .stop-4 .stop-info { top: -20px; left: -25px; }
         .stop-5 .stop-info { top: -20px; left: -20px; }
         .stop-6 .stop-info { top: -20px; left: -15px; }
+        .stop-7 .stop-info { top: -20px; left: -20px; }
+        .stop-8 .stop-info { top: -20px; left: -15px; }
+        .stop-9 .stop-info { top: -20px; left: -20px; }
+        .stop-10 .stop-info { top: -20px; left: -25px; }
+        .stop-11 .stop-info { top: -20px; left: -20px; }
+        .stop-12 .stop-info { top: -20px; left: -15px; }
+        .stop-13 .stop-info { top: -20px; left: -25px; }
 
         .loop-route {
             position: absolute;
             width: 200px;
             height: 200px;
-            border: 4px solid #e74c3c;
+            border: 4px solid #2ecc71;
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -243,7 +278,7 @@
             position: absolute;
             width: 180px;
             height: 180px;
-            border: 2px solid #f39c12;
+            border: 2px solid #27ae60;
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -251,12 +286,13 @@
         }
 
         .sidebar {
-            width: 300px;
             background: white;
-            margin: 20px 20px 20px 0;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 240px);
         }
 
         .sidebar h3 {
@@ -267,6 +303,27 @@
 
         .stop-list {
             list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .stop-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .stop-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .stop-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .stop-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
 
         .stop-list li {
@@ -276,7 +333,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-left: 4px solid #e74c3c;
+            border-left: 4px solid #f39c12;
         }
 
         .stop-list li:hover {
@@ -287,6 +344,10 @@
         .stop-list li.active {
             background: #e8f4f8;
             border-left-color: #3498db;
+        }
+
+        .stop-list li.start-end {
+            border-left: 4px solid #e74c3c;
         }
 
         .legend {
@@ -329,23 +390,59 @@
         .status-indicator.active { background: #2ecc71; }
         .status-indicator.inactive { background: #95a5a6; }
 
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr 350px;
+                gap: 15px;
+                padding: 15px;
+            }
+        }
+
         @media (max-width: 768px) {
             .main-container {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .map-container {
+                aspect-ratio: 16/9;
+                order: 1;
             }
             
             .sidebar {
-                width: 100%;
-                margin: 0 20px 20px 20px;
+                order: 2;
+                max-height: 400px;
             }
             
             .info-bar {
                 flex-direction: column;
                 gap: 10px;
             }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 10px;
+                gap: 10px;
+            }
             
-            .map-area {
-                height: 400px;
+            .map-container {
+                aspect-ratio: 4/3;
+            }
+            
+            .sidebar {
+                max-height: 300px;
+            }
+            
+            .stop-label {
+                font-size: 0.8em;
+                padding: 6px 10px;
+            }
+            
+            .stop-info {
+                font-size: 0.7em;
+                padding: 4px 8px;
             }
         }
 
@@ -414,28 +511,56 @@
             <div class="map-area" id="mapArea">
                 <div class="loop-route"></div>
                 
-                <div class="stop stop-1" onclick="selectStop(1)">
-                    <div class="stop-label">Summit House</div>
+                <div class="stop stop-1 start-end" onclick="selectStop(1)">
+                    <div class="stop-label">Summit on Juniper</div>
                     <div class="stop-info">Start/End • 7:10 AM</div>
                 </div>
                 <div class="stop stop-2" onclick="selectStop(2)">
-                    <div class="stop-label">Dartmouth Green</div>
+                    <div class="stop-label">DHMC East Entrance</div>
                     <div class="stop-info">ETA • 7:15 AM</div>
                 </div>
                 <div class="stop stop-3" onclick="selectStop(3)">
-                    <div class="stop-label">Baker Library</div>
+                    <div class="stop-label">Hanover Co-Op</div>
                     <div class="stop-info">ETA • 7:20 AM</div>
                 </div>
                 <div class="stop stop-4" onclick="selectStop(4)">
-                    <div class="stop-label">Hopkins Center</div>
+                    <div class="stop-label">Geisel School of Medicine/Vail</div>
                     <div class="stop-info">ETA • 7:25 AM</div>
                 </div>
                 <div class="stop stop-5" onclick="selectStop(5)">
-                    <div class="stop-label">Dartmouth Hall</div>
+                    <div class="stop-label">Webster Ave</div>
                     <div class="stop-info">ETA • 7:30 AM</div>
                 </div>
                 <div class="stop stop-6" onclick="selectStop(6)">
-                    <div class="stop-label">Summit House</div>
+                    <div class="stop-label">Tuck Mall</div>
+                    <div class="stop-info">ETA • 7:35 AM</div>
+                </div>
+                <div class="stop stop-7" onclick="selectStop(7)">
+                    <div class="stop-label">Blunt/Green</div>
+                    <div class="stop-info">ETA • 7:40 AM</div>
+                </div>
+                <div class="stop stop-8" onclick="selectStop(8)">
+                    <div class="stop-label">Dartmouth Hall</div>
+                    <div class="stop-info">ETA • 7:45 AM</div>
+                </div>
+                <div class="stop stop-9" onclick="selectStop(9)">
+                    <div class="stop-label">Burke</div>
+                    <div class="stop-info">ETA • 7:50 AM</div>
+                </div>
+                <div class="stop stop-10" onclick="selectStop(10)">
+                    <div class="stop-label">Berry Center</div>
+                    <div class="stop-info">ETA • 7:55 AM</div>
+                </div>
+                <div class="stop stop-11" onclick="selectStop(11)">
+                    <div class="stop-label">Brockway St SB</div>
+                    <div class="stop-info">ETA • 8:00 AM</div>
+                </div>
+                <div class="stop stop-12" onclick="selectStop(12)">
+                    <div class="stop-label">Hanover Co-Op</div>
+                    <div class="stop-info">ETA • 8:05 AM</div>
+                </div>
+                <div class="stop stop-13 start-end" onclick="selectStop(13)">
+                    <div class="stop-label">Summit on Juniper</div>
                     <div class="stop-info">Return to Start • 7:50 AM</div>
                 </div>
             </div>
@@ -444,28 +569,56 @@
         <div class="sidebar">
             <h3>📍 Stop Information</h3>
             <ul class="stop-list">
-                <li onclick="selectStop(1)" data-stop="1">
-                    <strong>Summit House</strong><br>
+                <li class="start-end" onclick="selectStop(1)" data-stop="1">
+                    <strong>Summit on Juniper</strong><br>
                     <small>Start/End - 7:10 AM Departure</small>
                 </li>
                 <li onclick="selectStop(2)" data-stop="2">
-                    <strong>Dartmouth Green</strong><br>
+                    <strong>DHMC East Entrance</strong><br>
                     <small>ETA - 7:15 AM</small>
                 </li>
                 <li onclick="selectStop(3)" data-stop="3">
-                    <strong>Baker Library</strong><br>
+                    <strong>Hanover Co-Op</strong><br>
                     <small>ETA - 7:20 AM</small>
                 </li>
                 <li onclick="selectStop(4)" data-stop="4">
-                    <strong>Hopkins Center</strong><br>
+                    <strong>Geisel School of Medicine/Vail</strong><br>
                     <small>ETA - 7:25 AM</small>
                 </li>
                 <li onclick="selectStop(5)" data-stop="5">
-                    <strong>Dartmouth Hall</strong><br>
+                    <strong>Webster Ave</strong><br>
                     <small>ETA - 7:30 AM</small>
                 </li>
                 <li onclick="selectStop(6)" data-stop="6">
-                    <strong>Summit House</strong><br>
+                    <strong>Tuck Mall</strong><br>
+                    <small>ETA - 7:35 AM</small>
+                </li>
+                <li onclick="selectStop(7)" data-stop="7">
+                    <strong>Blunt/Green</strong><br>
+                    <small>ETA - 7:40 AM</small>
+                </li>
+                <li onclick="selectStop(8)" data-stop="8">
+                    <strong>Dartmouth Hall</strong><br>
+                    <small>ETA - 7:45 AM</small>
+                </li>
+                <li onclick="selectStop(9)" data-stop="9">
+                    <strong>Burke</strong><br>
+                    <small>ETA - 7:50 AM</small>
+                </li>
+                <li onclick="selectStop(10)" data-stop="10">
+                    <strong>Berry Center</strong><br>
+                    <small>ETA - 7:55 AM</small>
+                </li>
+                <li onclick="selectStop(11)" data-stop="11">
+                    <strong>Brockway St SB</strong><br>
+                    <small>ETA - 8:00 AM</small>
+                </li>
+                <li onclick="selectStop(12)" data-stop="12">
+                    <strong>Hanover Co-Op</strong><br>
+                    <small>ETA - 8:05 AM</small>
+                </li>
+                <li class="start-end" onclick="selectStop(13)" data-stop="13">
+                    <strong>Summit on Juniper</strong><br>
                     <small>Return to Start - 7:50 AM</small>
                 </li>
             </ul>
@@ -487,6 +640,7 @@
                 <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
                     <strong>Departure Interval:</strong> 30 minutes<br>
                     <strong>Full Loop Time:</strong> 40 minutes<br>
+                    <strong>Total Stops:</strong> 13 stops<br>
                     <strong>Direction:</strong> Clockwise Loop
                 </div>
             </div>
