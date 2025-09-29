@@ -288,6 +288,60 @@
         .stop-12 .stop-info { top: -20px; left: -15px; }
         .stop-13 .stop-info { top: -20px; left: -25px; }
 
+        .bus-icon {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #e74c3c;
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        .bus-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .bus-icon::before {
+            content: '🚌';
+            font-size: 14px;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 25px rgba(231, 76, 60, 0.8);
+            }
+            100% {
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            }
+        }
+
+        .bus-label {
+            position: absolute;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 21;
+            margin-top: 35px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
         .loop-route {
             position: absolute;
             width: min(300px, 80%);
@@ -567,6 +621,11 @@
             </div>
             <div class="map-area" id="mapArea">
                 <div class="loop-route"></div>
+                
+                <!-- Current Bus Position -->
+                <div class="bus-icon" id="busIcon" onclick="showBusInfo()">
+                    <div class="bus-label" id="busLabel">Bus 1</div>
+                </div>
                 
                 <div class="stop stop-1 start-end" onclick="selectStop(1)">
                     <div class="stop-label">Summit on Juniper</div>
@@ -864,6 +923,93 @@
             console.log(`Selected stop: ${stopNumber}`);
         }
 
+        // Bus position data
+        let currentBusPosition = 0; // 0-12, representing position between stops
+        let busDirection = 1; // 1 for forward, -1 for backward
+        let busSpeed = 0.5; // Position increment per update
+
+        // Bus position coordinates (calculated for circular route)
+        const busPositions = [
+            { top: '85%', left: '75%' },   // 0: Summit on Juniper
+            { top: '77%', left: '67%' },   // 1: Between Summit and DHMC
+            { top: '70%', left: '60%' },   // 2: DHMC East Entrance
+            { top: '62%', left: '52%' },   // 3: Between DHMC and Hanover Co-Op
+            { top: '55%', left: '45%' },   // 4: Hanover Co-Op
+            { top: '47%', left: '37%' },   // 5: Between Hanover and Geisel
+            { top: '40%', left: '30%' },   // 6: Geisel School of Medicine/Vail
+            { top: '32%', left: '25%' },   // 7: Between Geisel and Webster
+            { top: '25%', left: '20%' },   // 8: Webster Ave
+            { top: '20%', left: '22%' },   // 9: Between Webster and Tuck
+            { top: '15%', left: '25%' },   // 10: Tuck Mall
+            { top: '12%', left: '32%' },   // 11: Between Tuck and Blunt
+            { top: '10%', left: '40%' },   // 12: Blunt/Green
+        ];
+
+        function updateBusPosition() {
+            const busIcon = document.getElementById('busIcon');
+            const busLabel = document.getElementById('busLabel');
+            
+            // Update position
+            currentBusPosition += busSpeed * busDirection;
+            
+            // Handle loop completion
+            if (currentBusPosition >= 12) {
+                currentBusPosition = 0;
+            } else if (currentBusPosition < 0) {
+                currentBusPosition = 12;
+            }
+            
+            // Get current position
+            const pos = busPositions[Math.floor(currentBusPosition)];
+            busIcon.style.top = pos.top;
+            busIcon.style.left = pos.left;
+            
+            // Update label based on position
+            const stopNames = [
+                'Summit on Juniper', '→ DHMC', 'DHMC East Entrance', '→ Hanover Co-Op',
+                'Hanover Co-Op', '→ Geisel', 'Geisel School of Medicine/Vail', '→ Webster',
+                'Webster Ave', '→ Tuck', 'Tuck Mall', '→ Blunt', 'Blunt/Green'
+            ];
+            
+            busLabel.textContent = stopNames[Math.floor(currentBusPosition)];
+        }
+
+        function showBusInfo() {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            alert(`🚌 Current Bus Information\n\n` +
+                  `Position: ${document.getElementById('busLabel').textContent}\n` +
+                  `Current Time: ${currentTime}\n` +
+                  `Next Stop: ${getNextStop()}\n` +
+                  `Estimated Arrival: ${getNextArrival()}`);
+        }
+
+        function getNextStop() {
+            const nextPosition = (Math.floor(currentBusPosition) + 1) % 13;
+            const stopNames = [
+                'Summit on Juniper', 'DHMC East Entrance', 'Hanover Co-Op',
+                'Geisel School of Medicine/Vail', 'Webster Ave', 'Tuck Mall',
+                'Blunt/Green', 'Dartmouth Hall', 'Burke', 'Berry Center',
+                'Brockway St SB', 'Hanover Co-Op', 'Summit on Juniper'
+            ];
+            return stopNames[nextPosition];
+        }
+
+        function getNextArrival() {
+            const nextPosition = (Math.floor(currentBusPosition) + 1) % 13;
+            const arrivalTimes = [
+                '7:10 AM', '7:15 AM', '7:20 AM', '7:25 AM', '7:30 AM',
+                '7:35 AM', '7:40 AM', '7:45 AM', '7:50 AM', '7:55 AM',
+                '8:00 AM', '8:05 AM', '7:50 AM'
+            ];
+            return arrivalTimes[nextPosition];
+        }
+
         // Simulate real-time updates
         function updateBusStatus() {
             const now = new Date();
@@ -879,6 +1025,9 @@
 
         // Update status every 30 seconds
         setInterval(updateBusStatus, 30000);
+
+        // Update bus position every 3 seconds
+        setInterval(updateBusPosition, 3000);
 
         // Mobile view toggle
         function toggleMobileView() {
@@ -903,6 +1052,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateDayIndicator();
             updateBusStatus();
+            updateBusPosition(); // Initialize bus position
             
             // Hide mobile toggle on desktop
             if (window.innerWidth > 768) {
